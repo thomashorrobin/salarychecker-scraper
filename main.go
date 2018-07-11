@@ -1,7 +1,7 @@
 package main
 
 import "net/url"
-import "./crawler"
+import crawler "./crawler"
 
 func main() {
 	url, _ := url.Parse("https://monzo.com")

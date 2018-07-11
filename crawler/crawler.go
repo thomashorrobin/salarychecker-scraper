@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"sync"
 
-	"../page"
+	page "../page"
 )
 
 // this represents a channel for passing parsed pages to a ui or other enduser
