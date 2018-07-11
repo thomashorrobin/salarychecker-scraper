@@ -5,56 +5,68 @@ import (
 	"sync"
 )
 
-func (c *crawler) listenOnURLCheckingChannel() {
-	for elem := range c.urlCheckingChannel {
-		go c.checkURL(elem)
+var urlCheckingChannel chan url.URL
+var finishedPageChannel chan page
+var checkedURLs map[url.URL]bool
+var mux sync.Mutex
+
+func startCrawl(u url.URL) chan page {
+	urlCheckingChannel = make(chan url.URL)
+	finishedPageChannel = make(chan page)
+	checkedURLs = make(map[url.URL]bool)
+	mux = sync.Mutex{}
+	go listenOnURLCheckingChannel()
+	urlCheckingChannel <- u
+	return finishedPageChannel
+}
+
+func markAsProcessedThenCheckIfCrawlIsDone(url url.URL) {
+	mux.Lock()
+	checkedURLs[url] = true
+	if haveAllQueuedURLsBeenProcessed(checkedURLs) {
+		close(finishedPageChannel)
 	}
+	mux.Unlock()
 }
 
-func initCrawler() crawler {
-	c := crawler{make(map[url.URL]bool), make(chan url.URL), make(chan page), sync.Mutex{}}
-	go c.listenOnURLCheckingChannel()
-	return c
-}
-
-type crawler struct {
-	checkedURLs         map[url.URL]bool
-	urlCheckingChannel  chan url.URL
-	finishedPageChannel chan page
-	mux                 sync.Mutex
-}
-
-func (c *crawler) checkURL(u url.URL) {
-	c.mux.Lock()
-	_, success := c.checkedURLs[u]
-	if !success {
-		c.checkedURLs[u] = false
-		go c.processURL(u)
-	}
-	c.mux.Unlock()
-}
-
-func (c *crawler) processURL(url url.URL) {
+func processURL(url url.URL) {
 	page := parseURL(url)
 	for _, link := range page.links {
-		c.urlCheckingChannel <- link
+		urlCheckingChannel <- link
 	}
-	c.finishedPageChannel <- page
+	finishedPageChannel <- page
 	// time.Sleep(time.Millisecond * 20)
-	go c.markAsProcessedAndCheckIfDone(url)
+	go markAsProcessedThenCheckIfCrawlIsDone(url)
 }
 
-func (c *crawler) markAsProcessedAndCheckIfDone(url url.URL) {
-	c.mux.Lock()
-	c.checkedURLs[url] = true
-	if c.haveAllQueuedURLsBeenProcessed() {
-		close(c.finishedPageChannel)
+func checkURL(u url.URL) {
+	mux.Lock()
+	_, success := checkedURLs[u]
+	if !success {
+		checkedURLs[u] = false
+		go processURL(u)
 	}
-	c.mux.Unlock()
+	mux.Unlock()
 }
 
-func (c *crawler) haveAllQueuedURLsBeenProcessed() bool {
-	for _, x := range c.checkedURLs {
+func listenOnURLCheckingChannelLimited(maxRequests int) {
+	requests := 0
+	for elem := range urlCheckingChannel {
+		requests++
+		if requests < maxRequests {
+			go checkURL(elem)
+		}
+	}
+}
+
+func listenOnURLCheckingChannel() {
+	for elem := range urlCheckingChannel {
+		go checkURL(elem)
+	}
+}
+
+func haveAllQueuedURLsBeenProcessed(checkedURLs map[url.URL]bool) bool {
+	for _, x := range checkedURLs {
 		if !x {
 			return false
 		}

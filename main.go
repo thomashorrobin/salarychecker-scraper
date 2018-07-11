@@ -6,9 +6,9 @@ func main() {
 	url, _ := url.Parse("https://monzo.com")
 	// page := parseURL(*url)
 	// page.PrintPage()
-	c := initCrawler()
-	go c.checkURL(*url)
-	for elem := range c.finishedPageChannel {
+	c := startCrawl(*url)
+	// go c.checkURL(*url)
+	for elem := range c {
 		elem.PrintPage()
 	}
 }
