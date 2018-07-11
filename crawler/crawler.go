@@ -1,18 +1,22 @@
-package main
+package crawler
 
 import (
 	"net/url"
 	"sync"
 
-	"./page"
+	"../page"
 )
+
+// this represents a channel for passing parsed pages to a ui or other enduser
+type PageChannel chan page.Page
 
 var urlCheckingChannel chan url.URL
 var finishedPageChannel chan page.Page
 var checkedURLs map[url.URL]bool
 var mux sync.Mutex
 
-func startCrawl(u url.URL) chan page.Page {
+// xxx
+func StartCrawl(u url.URL) PageChannel {
 	urlCheckingChannel = make(chan url.URL)
 	finishedPageChannel = make(chan page.Page)
 	checkedURLs = make(map[url.URL]bool)
