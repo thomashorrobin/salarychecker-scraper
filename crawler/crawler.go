@@ -7,7 +7,7 @@ import (
 	page "../page"
 )
 
-// this represents a channel for passing parsed pages to a ui or other enduser
+// PageChannel is an exportable type that allows pages to be pushed to the client
 type PageChannel chan page.Page
 
 var urlCheckingChannel chan url.URL
@@ -15,7 +15,7 @@ var finishedPageChannel chan page.Page
 var checkedURLs map[url.URL]bool
 var mux sync.Mutex
 
-// xxx
+// StartCrawl starts a crawl with the initial url as a parameter
 func StartCrawl(u url.URL) PageChannel {
 	urlCheckingChannel = make(chan url.URL)
 	finishedPageChannel = make(chan page.Page)
