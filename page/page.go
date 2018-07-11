@@ -1,4 +1,4 @@
-package main
+package page
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
-func parseURL(url url.URL) page {
+func ParseURL(url url.URL) Page {
 	resp, err := http.Get(url.String())
 	if err != nil {
 		fmt.Println("big problem with " + url.String())
-		return page{}
+		return Page{}
 	}
-	page := page{url: url}
+	page := Page{url: url}
 	tokenizer := html.NewTokenizer(resp.Body)
 	for {
 		tokenType := tokenizer.Next()
@@ -44,12 +44,16 @@ func parseURL(url url.URL) page {
 	return page
 }
 
-type page struct {
+type Page struct {
 	url   url.URL
 	links []url.URL
 }
 
-func (p *page) PrintPage() {
+func (p *Page) GetLinks() []url.URL {
+	return p.links
+}
+
+func (p *Page) PrintPage() {
 	fmt.Println(p.url.String())
 	for _, link := range p.links {
 		fmt.Println(" -- " + link.String())

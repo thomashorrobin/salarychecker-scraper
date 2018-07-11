@@ -3,19 +3,21 @@ package main
 import (
 	"net/url"
 	"sync"
+
+	"./page"
 )
 
 var urlCheckingChannel chan url.URL
-var finishedPageChannel chan page
+var finishedPageChannel chan page.Page
 var checkedURLs map[url.URL]bool
 var mux sync.Mutex
 
-func startCrawl(u url.URL) chan page {
+func startCrawl(u url.URL) chan page.Page {
 	urlCheckingChannel = make(chan url.URL)
-	finishedPageChannel = make(chan page)
+	finishedPageChannel = make(chan page.Page)
 	checkedURLs = make(map[url.URL]bool)
 	mux = sync.Mutex{}
-	go listenOnURLCheckingChannel()
+	go listenOnURLCheckingChannelLimited(5)
 	urlCheckingChannel <- u
 	return finishedPageChannel
 }
@@ -30,8 +32,8 @@ func markAsProcessedThenCheckIfCrawlIsDone(url url.URL) {
 }
 
 func processURL(url url.URL) {
-	page := parseURL(url)
-	for _, link := range page.links {
+	page := page.ParseURL(url)
+	for _, link := range page.GetLinks() {
 		urlCheckingChannel <- link
 	}
 	finishedPageChannel <- page
