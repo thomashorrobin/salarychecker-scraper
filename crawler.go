@@ -1,10 +1,10 @@
-package crawler
+package main
 
 import (
 	"net/url"
 	"sync"
 
-	page "../page"
+	page "./page"
 )
 
 // PageChannel is an exportable type that allows pages to be pushed to the client
@@ -21,7 +21,7 @@ func StartCrawl(u url.URL) PageChannel {
 	finishedPageChannel = make(chan page.Page)
 	checkedURLs = make(map[url.URL]bool)
 	mux = sync.Mutex{}
-	go listenOnURLCheckingChannelLimited(5)
+	go listenOnURLCheckingChannel()
 	urlCheckingChannel <- u
 	return finishedPageChannel
 }

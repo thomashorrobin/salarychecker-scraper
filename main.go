@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/url"
-
-	crawler "./crawler"
 )
 
 func main() {
@@ -12,7 +10,7 @@ func main() {
 	// page.PrintPage()
 	b := Benchmark{}
 	b.start()
-	c := crawler.StartCrawl(*url)
+	c := StartCrawl(*url)
 	// go c.checkURL(*url)
 	for elem := range c {
 		elem.PrintPage()

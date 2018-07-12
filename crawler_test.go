@@ -1,4 +1,4 @@
-package crawler
+package main
 
 import (
 	"net/url"
@@ -7,20 +7,20 @@ import (
 
 func TestHaveAllQueuedURLsBeenProcessed_mix(t *testing.T) {
 	// init
-	c := initCrawler()
+	checkedURLs := make(map[url.URL]bool)
 
 	// arange
 	u1, _ := url.Parse("https://monzo.com")
-	c.checkedURLs[*u1] = true
+	checkedURLs[*u1] = true
 
 	u2, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u2] = true
+	checkedURLs[*u2] = true
 
 	u3, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u3] = false
+	checkedURLs[*u3] = false
 
 	// act
-	output := c.haveAllQueuedURLsBeenProcessed()
+	output := haveAllQueuedURLsBeenProcessed(checkedURLs)
 
 	// assert
 	testpassed := output == false
@@ -32,20 +32,20 @@ func TestHaveAllQueuedURLsBeenProcessed_mix(t *testing.T) {
 
 func TestHaveAllQueuedURLsBeenProcessed_allTrue(t *testing.T) {
 	// init
-	c := initCrawler()
+	checkedURLs := make(map[url.URL]bool)
 
 	// arange
 	u1, _ := url.Parse("https://monzo.com")
-	c.checkedURLs[*u1] = true
+	checkedURLs[*u1] = true
 
 	u2, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u2] = true
+	checkedURLs[*u2] = true
 
 	u3, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u3] = true
+	checkedURLs[*u3] = true
 
 	// act
-	output := c.haveAllQueuedURLsBeenProcessed()
+	output := haveAllQueuedURLsBeenProcessed(checkedURLs)
 
 	// assert
 	testpassed := output == true
@@ -57,20 +57,20 @@ func TestHaveAllQueuedURLsBeenProcessed_allTrue(t *testing.T) {
 
 func TestHaveAllQueuedURLsBeenProcessed_allFalse(t *testing.T) {
 	// init
-	c := initCrawler()
+	checkedURLs := make(map[url.URL]bool)
 
 	// arange
 	u1, _ := url.Parse("https://monzo.com")
-	c.checkedURLs[*u1] = false
+	checkedURLs[*u1] = false
 
 	u2, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u2] = false
+	checkedURLs[*u2] = false
 
 	u3, _ := url.Parse("https://monzo.com/blog")
-	c.checkedURLs[*u3] = false
+	checkedURLs[*u3] = false
 
 	// act
-	output := c.haveAllQueuedURLsBeenProcessed()
+	output := haveAllQueuedURLsBeenProcessed(checkedURLs)
 
 	// assert
 	testpassed := output == false
