@@ -11,17 +11,17 @@ func main() {
 		urlFlag, _ := url.Parse(os.Args[1])
 		url = *urlFlag
 	} else {
-		urlDefault, _ := url.Parse("https://monzo.com")
+		urlDefault, _ := url.Parse("https://www.totaljobs.com")
 		url = *urlDefault
 	}
-	b := Benchmark{}
-	b.Start()
+	b := benchmark{}
+	b.start()
 	c := StartCrawl(url)
 	// go c.checkURL(*url)
 	for elem := range c {
 		elem.PrintPage()
-		b.IncrementPageCount()
+		b.incrementPageCount()
 	}
-	b.Stop()
-	b.Print()
+	b.stop()
+	b.print()
 }

@@ -10,13 +10,13 @@ func TestHaveAllQueuedURLsBeenProcessed_mix(t *testing.T) {
 	checkedURLs := make(map[url.URL]bool)
 
 	// arange
-	u1, _ := url.Parse("https://monzo.com")
+	u1, _ := url.Parse("https://www.totaljobs.com")
 	checkedURLs[*u1] = true
 
-	u2, _ := url.Parse("https://monzo.com/blog")
+	u2, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u2] = true
 
-	u3, _ := url.Parse("https://monzo.com/blog")
+	u3, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u3] = false
 
 	// act
@@ -35,13 +35,13 @@ func TestHaveAllQueuedURLsBeenProcessed_allTrue(t *testing.T) {
 	checkedURLs := make(map[url.URL]bool)
 
 	// arange
-	u1, _ := url.Parse("https://monzo.com")
+	u1, _ := url.Parse("https://www.totaljobs.com")
 	checkedURLs[*u1] = true
 
-	u2, _ := url.Parse("https://monzo.com/blog")
+	u2, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u2] = true
 
-	u3, _ := url.Parse("https://monzo.com/blog")
+	u3, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u3] = true
 
 	// act
@@ -60,13 +60,13 @@ func TestHaveAllQueuedURLsBeenProcessed_allFalse(t *testing.T) {
 	checkedURLs := make(map[url.URL]bool)
 
 	// arange
-	u1, _ := url.Parse("https://monzo.com")
+	u1, _ := url.Parse("https://www.totaljobs.com")
 	checkedURLs[*u1] = false
 
-	u2, _ := url.Parse("https://monzo.com/blog")
+	u2, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u2] = false
 
-	u3, _ := url.Parse("https://monzo.com/blog")
+	u3, _ := url.Parse("https://www.totaljobs.com/blog")
 	checkedURLs[*u3] = false
 
 	// act

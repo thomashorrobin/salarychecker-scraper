@@ -6,7 +6,7 @@ import (
 )
 
 func TestParseUrl(t *testing.T) {
-	u1, _ := url.Parse("https://monzo.com")
+	u1, _ := url.Parse("https://www.totaljobs.com")
 	page := ParseURL(*u1)
 	success := false
 	for okay := range page.links {
