@@ -18,24 +18,30 @@ func ParseURL(url url.URL) Page {
 	page := Page{url: url}
 	tokenizer := html.NewTokenizer(resp.Body)
 	for {
+		// move the interator forward
 		tokenType := tokenizer.Next()
 		if tokenType == html.ErrorToken {
+			// if the token is an ErrorToken then we can assume that this is the end of the file and we need to break the loop
 			break
 		}
 		token := tokenizer.Token()
+		// this checks if the token is an <a> tag
+		// TODO: add checks for img tags etc
 		if token.DataAtom == atom.A {
 			for i := range token.Attr {
+				// we can get the relevant link from the href attribute
 				if token.Attr[i].Key == "href" {
 					href := token.Attr[i].Val
+					// if the href starts with a / then it's an internal link
 					if len(href) > 1 && href[0] == "/"[0] {
-						x, err := url.Parse(href)
-						x.Host = page.url.Host
-						x.Fragment = ""
+						link, err := url.Parse(href)
+						// set the host to the same host as the page
+						link.Host = page.url.Host
+						// set the fragment to an empty string
+						link.Fragment = ""
 						if err == nil {
-							page.links = append(page.links, *x)
+							page.links = append(page.links, *link)
 						}
-						// fmt.Println(token.Attr[i].Val)
-						// fmt.Println(token.String())
 					}
 				}
 			}
