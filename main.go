@@ -9,13 +9,13 @@ func main() {
 	// page := parseURL(*url)
 	// page.PrintPage()
 	b := Benchmark{}
-	b.start()
+	b.Start()
 	c := StartCrawl(*url)
 	// go c.checkURL(*url)
 	for elem := range c {
 		elem.PrintPage()
-		b.incrementPageCount()
+		b.IncrementPageCount()
 	}
-	b.stop()
-	b.print()
+	b.Stop()
+	b.Print()
 }
