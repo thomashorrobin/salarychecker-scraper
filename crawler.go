@@ -55,16 +55,6 @@ func checkURL(u url.URL) {
 	mux.Unlock()
 }
 
-func listenOnURLCheckingChannelLimited(maxRequests int) {
-	requests := 0
-	for elem := range urlCheckingChannel {
-		requests++
-		if requests < maxRequests {
-			go checkURL(elem)
-		}
-	}
-}
-
 func listenOnURLCheckingChannel() {
 	for elem := range urlCheckingChannel {
 		go checkURL(elem)
