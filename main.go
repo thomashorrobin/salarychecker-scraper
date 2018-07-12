@@ -14,7 +14,7 @@ func main() {
 	// go c.checkURL(*url)
 	for elem := range c {
 		elem.PrintPage()
-		b.count()
+		b.incrementPageCount()
 	}
 	b.stop()
 	b.print()

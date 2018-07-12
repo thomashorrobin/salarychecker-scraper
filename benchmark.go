@@ -17,7 +17,7 @@ func (b *Benchmark) start() {
 	b.pageCount = 0
 }
 
-func (b *Benchmark) count() {
+func (b *Benchmark) incrementPageCount() {
 	b.pageCount++
 }
 
